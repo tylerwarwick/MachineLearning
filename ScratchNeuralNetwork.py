@@ -3,22 +3,33 @@ import numpy as np
 
 
 #Import dataset from MNIST
-data = pd.read_csv('/MNIST_CSV/mnist_train.csv')
+trainingData = pd.read_csv('./MNIST_CSV/mnist_train.csv')
+testingData = pd.read_csv('./MNIST_CSV/mnist_test.csv')
 
 #Transform into numpy array
-data = np.array(data)
+trainingData = np.array(trainingData)
+testingData = np.array(testingData)
 
 #Store dimensions so that we can pull expected values out
-m, n = data.shape
+m, n = trainingData.shape
+j, k = testingData.shape 
 
-expectedOutput = data.T[0]
-rawData = data.T[1:m] 
-
+### TRAINING DATA ###
 #Transpose matrix to have each image be a column vector
-trainingData = data.T
+trainingData = trainingData.T
 expectedOutput_Train = trainingData[0]
-expectedOutput_Train = trainingData[1:n]
-expectedOutput_Train = expectedOutput_Train / 255.
+data_Train = trainingData[1:n]
+data_Train = data_Train / 255.
+
+
+### TESTING DATA ###
+testingData = testingData.T
+print(testingData.shape)
+expectedOutput_Test = testingData[0]
+print(expectedOutput_Test.shape)
+data_Test = testingData[1:k]
+data_Test =  data_Test / 255
+
 
 #Define inital weights and biases with values between -0.5 and 0.5
 def init_params():
@@ -72,8 +83,8 @@ def expectedOutputEncoded(Y):
 
 #Define cost function and bind gradient descent that hopefully converges to global minimum
 def backward_prop(Z1, A1, Z2, A2, W1, W2, X, Y):
-    expectedOutputEncoded = expectedOutputEncoded(Y)
-    dZ2 = A2 - expectedOutputEncoded
+    eoy = expectedOutputEncoded(Y)
+    dZ2 = A2 - eoy
     dW2 = 1 / m * dZ2.dot(A1.T)
     db2 = 1 / m * np.sum(dZ2)
     dZ1 = W2.T.dot(dZ2) * ReLU_deriv(Z1)
@@ -111,4 +122,10 @@ def gradient_descent(X, Y, alpha, iterations):
             print(get_accuracy(predictions, Y))
     return W1, b1, W2, b2
 
-W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 0.10, 500)
+W1, b1, W2, b2 = gradient_descent(data_Train, expectedOutput_Train, 0.10, 500)
+
+##Test weights n biases with test data
+Z1, A1, Z2, A2 = forward_prop(W1, b1, W2, b2, data_Test)
+predictions = get_predictions(A2)
+print(get_accuracy(predictions, expectedOutput_Test))
+
