@@ -3,7 +3,7 @@ import numpy as np
 
 
 #Import dataset from MNIST
-trainingData = pd.read_csv('./MNIST_CSV/mnist_train.csv')
+trainingData = pd.read_csv('../ML/README.md')
 testingData = pd.read_csv('./MNIST_CSV/mnist_test.csv')
 
 #Transform into numpy array
@@ -26,7 +26,7 @@ data_Train = data_Train / 255.
 testingData = testingData.T
 print(testingData.shape)
 expectedOutput_Test = testingData[0]
-print(expectedOutput_Test.shape)
+print(expectedOutput_Test.shape):
 data_Test = testingData[1:k]
 data_Test =  data_Test / 255
 
@@ -35,9 +35,9 @@ data_Test =  data_Test / 255
 def init_params():
     #One image makes 784 greyscale values
     #The dot product then reduces those down to 10 nodes in the hidden layer
-    W1 = np.random.rand(30, 784) - 0.5
-    b1 = np.random.rand(30, 1) - 0.5
-    W2 = np.random.rand(10, 30) - 0.5
+    W1 = np.random.rand(10, 784) - 0.5
+    b1 = np.random.rand(10, 1) - 0.5
+    W2 = np.random.rand(10, 10) - 0.5
     b2 = np.random.rand(10, 1) - 0.5
    
     return W1, b1, W2, b2
