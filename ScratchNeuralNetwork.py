@@ -82,20 +82,23 @@ def backward_prop(Z1, A1, Z2, A2, W1, W2, X, Y):
     
     return dW1, db1, dW2, db2
 
-def update_params(W1, b1, W2, b2, dW1, db1, dW2, db2, alpha):
-    W1 = W1 - alpha * dW1
-    b1 = b1 - alpha * db1    
-    W2 = W2 - alpha * dW2  
-    b2 = b2 - alpha * db2    
+#Update weights n biases with gradient descent vector times the learning rate
+def update_params(W1, b1, W2, b2, dW1, db1, dW2, db2, learningRate):
+    W1 = W1 - learningRate * dW1
+    b1 = b1 - learningRate * db1    
+    W2 = W2 - learningRate * dW2  
+    b2 = b2 - learningRate * db2    
     return W1, b1, W2, b2
 
+#Output node with largest value is networks prediction
 def get_predictions(A2):
     return np.argmax(A2, 0)
 
+#Compare expectedOutput and predictions vectors for accuracy
 def get_accuracy(predictions, Y):
-    print(predictions, Y)
     return np.sum(predictions == Y) / Y.size
 
+#Loop through forward and backward propogation in hopes of convergence
 def gradient_descent(X, Y, alpha, iterations):
     W1, b1, W2, b2 = init_params()
     for i in range(iterations):
