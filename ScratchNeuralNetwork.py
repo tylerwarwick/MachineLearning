@@ -35,9 +35,9 @@ data_Test =  data_Test / 255
 def init_params():
     #One image makes 784 greyscale values
     #The dot product then reduces those down to 10 nodes in the hidden layer
-    W1 = np.random.rand(10, 784) - 0.5
-    b1 = np.random.rand(10, 1) - 0.5
-    W2 = np.random.rand(10, 10) - 0.5
+    W1 = np.random.rand(30, 784) - 0.5
+    b1 = np.random.rand(30, 1) - 0.5
+    W2 = np.random.rand(10, 30) - 0.5
     b2 = np.random.rand(10, 1) - 0.5
    
     return W1, b1, W2, b2
