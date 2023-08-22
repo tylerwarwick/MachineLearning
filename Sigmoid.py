@@ -48,8 +48,8 @@ def init_params():
 #Our grayscale points will all be less than 0 
 #We can just return the value if greater or equal to 0.5
 #If it's a negative number return 0
-def ReLU(Z):
-    return np.maximum(Z, 0)
+def Sigmoid(Z):
+    return 1/(1 + np.exp(-Z))
 
 #Need to return nodes with decimal values between 0 and 1
 #These are our confidence in the predictions
@@ -60,15 +60,15 @@ def softmax(Z):
 #Apply weights n biases from input nodes to output nodes
 def forward_prop(W1, b1, W2, b2, X):
     Z1 = W1.dot(X) + b1
-    A1 = ReLU(Z1) 
+    A1 = Sigmoid(Z1) 
     Z2 = W2.dot(A1) + b2
     A2 = softmax(Z2)
     return Z1, A1, Z2, A2
 
 #Derivative of ReLu is 0 or 1 because it's a linear function
-def ReLU_deriv(Z):
+def Sigmoid_deriv(Z):
     #True equals a value of 1 and false to 0
-    return Z > 0
+    return Sigmoid(Z) * (1 - Sigmoid(Z))
 
 
 #Need to encode our expectations as 10 element vector
@@ -86,7 +86,7 @@ def backward_prop(Z1, A1, Z2, A2, W1, W2, X, Y):
     dZ2 = A2 - eoy
     dW2 = 1 / m * dZ2.dot(A1.T)
     db2 = 1 / m * np.sum(dZ2)
-    dZ1 = W2.T.dot(dZ2) * ReLU_deriv(Z1)
+    dZ1 = W2.T.dot(dZ2) * Sigmoid_deriv(Z1)
     dW1 = 1 / m * dZ1.dot(X.T)
     db1 = 1 / m * np.sum(dZ1)
     
