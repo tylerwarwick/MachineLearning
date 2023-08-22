@@ -33,7 +33,7 @@ data_Test =  data_Test / 255
 
 #Define inital weights and biases with values between -0.5 and 0.5
 def init_params():
-    #One image makes 784 greyscale values
+    #One image makes 784 greyscale values dfa
     #The dot product then reduces those down to 10 nodes in the hidden layer
     W1 = np.random.rand(10, 784) - 0.5
     b1 = np.random.rand(10, 1) - 0.5
