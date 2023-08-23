@@ -17,6 +17,7 @@ j, k = testingData.shape
 
 ### TRAINING DATA ###
 #Transpose matrix to have each image be a column vector
+np.random.shuffle(trainingData)
 trainingData = trainingData.T
 expectedOutput_Train = trainingData[0]
 data_Train = trainingData[1:n]
@@ -45,11 +46,10 @@ def init_params():
 ### As an aside we use activation functions so that the nodes ###
 ### are not just linear combinations ###
 
-#Our grayscale points will all be less than 0 
-#We can just return the value if greater or equal to 0.5
-#If it's a negative number return 0
+
 def Sigmoid(Z):
     return 1/(1 + np.exp(-Z))
+
 
 #Need to return nodes with decimal values between 0 and 1
 #These are our confidence in the predictions
@@ -65,7 +65,7 @@ def forward_prop(W1, b1, W2, b2, X):
     A2 = softmax(Z2)
     return Z1, A1, Z2, A2
 
-#Derivative of ReLu is 0 or 1 because it's a linear function
+
 def Sigmoid_deriv(Z):
     #True equals a value of 1 and false to 0
     return Sigmoid(Z) * (1 - Sigmoid(Z))
@@ -109,26 +109,32 @@ def get_accuracy(predictions, Y):
     return np.sum(predictions == Y) / Y.size
 
 #Loop through forward and backward propogation in hopes of convergence
-def gradient_descent(X, Y, alpha, iterations):
+def SGD(X, Y, alpha, iterations, batchSize):
     W1, b1, W2, b2 = init_params()
     for i in range(iterations):
-        Z1, A1, Z2, A2 = forward_prop(W1, b1, W2, b2, X)
-        dW1, db1, dW2, db2 = backward_prop(Z1, A1, Z2, A2, W1, W2, X, Y)
+        #Need to do regular gradient descent with mini batch
+        m, n = X.shape
+        k = np.random.randint(0, n-batchSize)
+        X_MiniBatch = X[:, k:k+batchSize]
+        Y_MiniBatch = Y[k:k+batchSize]
+
+        Z1, A1, Z2, A2 = forward_prop(W1, b1, W2, b2, X_MiniBatch)
+        dW1, db1, dW2, db2 = backward_prop(Z1, A1, Z2, A2, W1, W2, X_MiniBatch, Y_MiniBatch)
         W1, b1, W2, b2 = update_params(W1, b1, W2, b2, dW1, db1, dW2, db2, alpha)
+
         if i % 10 == 0:
             print("Iteration: ", i)
             predictions = get_predictions(A2)
-            print(get_accuracy(predictions, Y))
+            print(get_accuracy(predictions, Y_MiniBatch))
     return W1, b1, W2, b2
 
 start = time.time()
-W1, b1, W2, b2 = gradient_descent(data_Train, expectedOutput_Train, 0.10, 1000)
+W1, b1, W2, b2 = SGD(data_Train, expectedOutput_Train, 0.10, 10000, 2500)
 end = time.time()
 
-print("Normal gradient descent takes: %.2f" % (end - start), "s")
+print("Stochastic gradient descent with sigmoid takes: %.2f" % (end - start), "s")
 
 ##Test weights n biases with test data
 Z1, A1, Z2, A2 = forward_prop(W1, b1, W2, b2, data_Test)
 predictions = get_predictions(A2)
-print(get_accuracy(predictions, expectedOutput_Test))
-
+print("Accuracy of: ", get_accuracy(predictions, expectedOutput_Test), " with testing data")

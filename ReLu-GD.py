@@ -125,10 +125,10 @@ start = time.time()
 W1, b1, W2, b2 = gradient_descent(data_Train, expectedOutput_Train, 0.10, 1000)
 end = time.time()
 
-print("Normal gradient descent takes: %.2f" % (end - start), "s")
+print("Gradient descent with ReLu takes: %.2f" % (end - start), "s")
 
 ##Test weights n biases with test data
 Z1, A1, Z2, A2 = forward_prop(W1, b1, W2, b2, data_Test)
 predictions = get_predictions(A2)
-print(get_accuracy(predictions, expectedOutput_Test))
+print("Accuracy of: ", get_accuracy(predictions, expectedOutput_Test), " with testing data")
 
